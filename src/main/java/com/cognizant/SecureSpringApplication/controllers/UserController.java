@@ -32,8 +32,6 @@ public class UserController {
         us.addUser(user);
     }
 
-    @PostMapping("/login")
-
 
     @PutMapping("/{id}")
     public void updateUser(
