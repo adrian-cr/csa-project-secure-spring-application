@@ -14,11 +14,8 @@ import java.util.List;
 
 @Service
 public class UserService /*implements UserDetailsService*/ {
-    @Autowired
-    private UserRepository userRep;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private UserRepository userRep;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -23,7 +23,7 @@ public class LoginController {
     @Autowired private UserRepository userRep;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JwtUtil jwtUtil;
-    @Autowired private AuthenticationManager authManager; //Auth Manager
+    @Autowired private AuthenticationManager authManager;
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -35,7 +35,7 @@ public class LoginController {
 //        } else {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 //        }
-        /*Auth Manager*/
+
         try {
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -47,7 +47,6 @@ public class LoginController {
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
         }
-        /* --------- */
     }
 
 }
