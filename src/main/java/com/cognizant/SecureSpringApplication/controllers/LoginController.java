@@ -23,29 +23,31 @@ public class LoginController {
     @Autowired private UserRepository userRep;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JwtUtil jwtUtil;
-//    @Autowired private AuthenticationManager authManager;
+    @Autowired private AuthenticationManager authManager; //Auth Manager
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        User user = userRep.findByUsername(request.getUsername());
-
-        if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            String token = jwtUtil.generateToken(user.getUsername());
-            return ResponseEntity.ok(new JwtResponse(token));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-//        try {
-//            Authentication authentication = authManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-//            );
+//        User user = userRep.findByUsername(request.getUsername());
 //
-//            String token = jwtUtil.generateToken(request.getUsername());
+//        if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//            String token = jwtUtil.generateToken(user.getUsername());
 //            return ResponseEntity.ok(new JwtResponse(token));
-//
-//        } catch (AuthenticationException ex) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 //        }
+        /*Auth Manager*/
+        try {
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+
+            String token = jwtUtil.generateToken(request.getUsername());
+            return ResponseEntity.ok(new JwtResponse(token));
+
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+        }
+        /* --------- */
     }
 
 }

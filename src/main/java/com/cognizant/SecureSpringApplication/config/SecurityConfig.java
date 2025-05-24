@@ -1,6 +1,7 @@
 package com.cognizant.SecureSpringApplication.config;
 
 import com.cognizant.SecureSpringApplication.filters.JwtFilter;
+import com.cognizant.SecureSpringApplication.services.UserDetailsService;
 import com.cognizant.SecureSpringApplication.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,16 +25,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Autowired private JwtFilter jwtFilter;
-//    @Autowired private UserService us;
+    @Autowired private UserDetailsService uds; //Auth Manager
 //
-
-//    @Bean
-//    public DaoAuthenticationProvider authProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(us);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
+    /*Auth Manager*/
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(uds);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+    /* --------- */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,10 +56,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-//        return config.getAuthenticationManager();
-//    }
+    /*Auth Manager*/
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(authProvider())
+                .build();
+    }
+    /* --------- */
 
 
 //
