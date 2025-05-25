@@ -3,7 +3,6 @@ package com.cognizant.SecureSpringApplication.controllers;
 import com.cognizant.SecureSpringApplication.dto.LoginRequest;
 import com.cognizant.SecureSpringApplication.security.JwtUtil;
 import com.cognizant.SecureSpringApplication.dto.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +11,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 @RestController
 @RequestMapping("/login")
 public class LoginController {
     @Autowired private JwtUtil jwtUtil;
     @Autowired private AuthenticationManager authManager;
+
+    @GetMapping
+    public ResponseEntity<?> getLoginPage() {
+        return ResponseEntity.ok("Login Page");
+    }
 
     @PostMapping
     public ResponseEntity<?> login(
@@ -42,7 +47,7 @@ public class LoginController {
         );
 
         String token = jwtUtil.generateToken(request.getUsername());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
 }
